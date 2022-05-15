@@ -1,16 +1,20 @@
 import '../data/data_repositary.dart';
 import 'entities.dart';
 
-class ToDoAdder {}
-
 class ToDoDeleter {}
 
-class ToDoSaver {}
+class ToDoSaver {
+  ToDoNoteModel noteModel;
 
-class ToDoReader {}
+  ToDoSaver(this.noteModel);
+
+  Future SaveToDo() async {
+    return await ToDoListSaver(noteModel).SaveToDo();
+  }
+}
 
 class ToDoListReceiver {
-  Future<List<ToDoNote>> ReceiveToDoes() async {
-    return await ToDoListFetcher().FetchToDoes();
+  static Future<List<ToDoNoteModel>> ReceiveToDoes() {
+    return ToDoListFetcher.FetchToDoes();
   }
 }
