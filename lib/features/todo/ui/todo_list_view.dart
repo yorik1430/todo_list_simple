@@ -16,7 +16,7 @@ class MyHomePage extends StatelessWidget {
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Text(''),
+        title: Text('Список дел'),
       ),
       body: Center(
           // Center is a layout widget. It takes a single child and positions it
@@ -31,7 +31,9 @@ class MyHomePage extends StatelessWidget {
           return ListView.builder(
             itemCount: state.noteModels.length,
               itemBuilder: (cont, index) => ListTile(
-                    title: Text(state.noteModels[index].note.todo_name),
+                leading: Text(state.noteModels[index].note.todo_date.toString()),
+                  title: Text(state.noteModels[index].note.todo_name),
+                    trailing: Checkbox(value: state.noteModels[index].note.isDone, onChanged: (_) {},),
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => MyToDo(state.noteModels[index])),
