@@ -29,7 +29,7 @@ class DataApi {
       'isDone':noteModel.note.isDone};
   }
 
-  static ToDoNoteModel ToDoFromMap(Map<String, dynamic> mapnoteModel) {
+  static ToDoNoteModel ToDoFromMap(mapnoteModel) {
     ToDoNote note = ToDoNote();
     note.todo_date = mapnoteModel['todo_date'];
     note.todo_name = mapnoteModel['todo_name'];

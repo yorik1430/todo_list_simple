@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:date_field/date_field.dart';
 import 'package:todo_list_simple/features/todo/ui/todo_list_viewmodel.dart';
-
 import '../data/data_repositary.dart';
 import '../domain/entities.dart';
 
@@ -23,7 +23,7 @@ class MyHomePage extends StatelessWidget {
           // in the middle of the parent.
           child: BlocBuilder<ToDoBloc, NoteStates>(
               builder: (BuildContext context, state) {
-        if (state is NotesEmpty){
+        if (state is NotesEmpty) {
           BlocProvider.of<ToDoBloc>(context).add(NotesReceive());
           return Text('данные начинают считыватся');
         }
@@ -68,7 +68,6 @@ class MyToDo extends StatefulWidget {
 
 class MyToDoState extends State<MyToDo> {
   ToDoNoteModel noteModel;
-  TextEditingController _datecontroller = TextEditingController();
   TextEditingController _namecontroller = TextEditingController();
   TextEditingController _descriptioncontroller = TextEditingController();
 
@@ -76,7 +75,6 @@ class MyToDoState extends State<MyToDo> {
 
   @override
   Widget build(BuildContext context) {
-    _datecontroller.text = noteModel.note.todo_date.toString();
     _namecontroller.text = noteModel.note.todo_name;
     _descriptioncontroller.text = noteModel.note.todo_description;
 
@@ -87,8 +85,16 @@ class MyToDoState extends State<MyToDo> {
         body: Center(
             child: Column(
               children: [
-                Text('Дата'),
-                TextField(controller: _datecontroller),
+                DateTimeField(
+                  decoration: const InputDecoration(hintText: 'Дата события'),
+                  selectedDate: noteModel.note.todo_date,
+                  onDateSelected: (DateTime value) {
+                    setState(() {
+                      noteModel.note.todo_date = value;
+                    });
+                  },
+
+                ),
                 Text('Название'),
                 TextField(controller: _namecontroller),
                 Text('Описание'),
@@ -98,14 +104,14 @@ class MyToDoState extends State<MyToDo> {
                     onChanged: (value) {
                         setState((){
                         noteModel.note.isDone = value;
-                        noteModel.note.todo_date = DateTime.parse(_datecontroller.text);
+                        //noteModel.note.todo_date = DateTime.parse(_datecontroller.text);
                         noteModel.note.todo_name = _namecontroller.text;
                         noteModel.note.todo_description = _descriptioncontroller.text;
                       });
                     }),
                 FloatingActionButton.extended(
                   onPressed: () {
-                    noteModel.note.todo_date = DateTime.parse(_datecontroller.text);
+                    //noteModel.note.todo_date = DateTime.parse(_datecontroller.text);
                     noteModel.note.todo_name = _namecontroller.text;
                     noteModel.note.todo_description = _descriptioncontroller.text;
 
