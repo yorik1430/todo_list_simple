@@ -1,21 +1,21 @@
-import '../domain/entities.dart';
-import 'data_api.dart';
+import '../domain/todo_entities.dart';
+import 'todo_api.dart';
 
-class ToDoNoteModel {
+class ToDoModel {
   int? id;
-  ToDoNote note;
+  ToDo toDo;
 
-  ToDoNoteModel(this.note);
+  ToDoModel(this.toDo);
 }
 
 class ToDoListFetcher {
-  static Future<List<ToDoNoteModel>> FetchToDoes() {
+  static Future<List<ToDoModel>> FetchToDoes() {
     return DataApi.GetToDoes();
   }
 }
 
 class ToDoListSaver {
-  ToDoNoteModel noteModel;
+  ToDoModel noteModel;
 
   ToDoListSaver(this.noteModel);
 

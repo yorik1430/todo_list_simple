@@ -1,10 +1,10 @@
-import '../data/data_repositary.dart';
-import 'entities.dart';
+import '../data/todo_repositary.dart';
+import 'todo_entities.dart';
 
 class ToDoDeleter {}
 
 class ToDoSaver {
-  ToDoNoteModel noteModel;
+  ToDoModel noteModel;
 
   ToDoSaver(this.noteModel);
 
@@ -14,7 +14,7 @@ class ToDoSaver {
 }
 
 class ToDoListReceiver {
-  static Future<List<ToDoNoteModel>> ReceiveToDoes() {
+  static Future<List<ToDoModel>> ReceiveToDoes() {
     return ToDoListFetcher.FetchToDoes();
   }
 }

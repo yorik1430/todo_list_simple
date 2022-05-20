@@ -1,56 +1,53 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../data/data_repositary.dart';
-import '../domain/entities.dart';
-import '../domain/use_cases.dart';
+import '../data/todo_repositary.dart';
+import '../domain/todo_usecases.dart';
 
-abstract class NoteEvents {}
+abstract class ToDoEvents {}
 
-class NoteChange extends NoteEvents{
-  ToDoNoteModel noteModel;
+class ToDoChange extends ToDoEvents{
+  ToDoModel toDoModel;
 
-  NoteChange(this.noteModel);
+  ToDoChange(this.toDoModel);
 }
 
+class ToDoesReceive extends ToDoEvents{}
 
+class ToDoDelete extends ToDoEvents{}
 
-class NotesReceive extends NoteEvents{}
+abstract class ToDoStates {}
 
-class NoteDelete extends NoteEvents{}
+class ToDoesEmpty extends ToDoStates{}
 
-abstract class NoteStates {}
-
-class NotesEmpty extends NoteStates{}
-
-class Notereceiving extends NoteStates {
-  Notereceiving();
+class ToDoreceiving extends ToDoStates {
+  ToDoreceiving();
 }
 
-class Notereceived extends NoteStates {
-  List<ToDoNoteModel> noteModels;
+class ToDoreceived extends ToDoStates {
+  List<ToDoModel> toDoModels;
 
-  Notereceived(this.noteModels);
+  ToDoreceived(this.toDoModels);
 
 }
 
-class Noteerror extends NoteStates {}
+class ToDoerror extends ToDoStates {}
 
 
-class ToDoBloc extends Bloc<NoteEvents,NoteStates> {
-  ToDoBloc(NoteStates initialState) : super(initialState);
+class ToDoBloc extends Bloc<ToDoEvents,ToDoStates> {
+  ToDoBloc(ToDoStates initialState) : super(initialState);
 
   @override
-  Stream<NoteStates> mapEventToState(NoteEvents event) async* {
-    if (event is NoteChange) {
+  Stream<ToDoStates> mapEventToState(ToDoEvents event) async* {
+    if (event is ToDoChange) {
 
-      await ToDoSaver(event.noteModel).SaveToDo();
+      await ToDoSaver(event.toDoModel).SaveToDo();
 
     }
 
-    if (event is NotesReceive || event is NoteChange) {
-      yield Notereceiving();
+    if (event is ToDoesReceive || event is ToDoChange) {
+      yield ToDoreceiving();
 
-      List<ToDoNoteModel> noteModels = await ToDoListReceiver.ReceiveToDoes();
-      yield Notereceived(noteModels);
+      List<ToDoModel> ToDoModels = await ToDoListReceiver.ReceiveToDoes();
+      yield ToDoreceived(ToDoModels);
 
     }
 
