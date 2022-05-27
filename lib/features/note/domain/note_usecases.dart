@@ -14,6 +14,6 @@ class NoteSaver {
 
 class NoteListReceiver {
   static Future<List<NoteModel>> ReceiveNotes() {
-    return NoteListFetcher.FetchToDoes();
+    return NoteListFetcher.FetchNotes();
   }
 }

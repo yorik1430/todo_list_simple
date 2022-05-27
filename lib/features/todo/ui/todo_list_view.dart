@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:date_field/date_field.dart';
+import 'package:get_it/get_it.dart';
 import 'package:todo_list_simple/features/todo/ui/todo_list_viewmodel.dart';
 import '../data/todo_repositary.dart';
 import '../domain/todo_entities.dart';
@@ -47,7 +48,7 @@ class ToDoesPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (_) => MyToDo(ToDoModel(ToDo()))));
+              MaterialPageRoute(builder: (_) => MyToDo(GetIt.instance<ToDoModel>())));
         },
         tooltip: 'Добавить задачу',
         child: const Icon(Icons.add),
@@ -60,7 +61,6 @@ class MyToDo extends StatefulWidget {
   ToDoModel toDoModel;
 
   MyToDo(this.toDoModel);
-
   @override
   State<MyToDo> createState() {
     return MyToDoState(toDoModel);

@@ -1,3 +1,5 @@
+import 'package:get_it/get_it.dart';
+
 import '../domain/note_entities.dart';
 import 'note_repositary.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -29,13 +31,12 @@ class NoteApi {
   }
 
   static NoteModel NoteFromMap(mapnoteModel) {
-    Note note = Note();
-    note.note_created = mapnoteModel['note_created'];
-    note.note_name = mapnoteModel['note_name'];
-    note.note_description = mapnoteModel['note_description'];
 
-    NoteModel noteModel = NoteModel(note);
+    NoteModel noteModel = GetIt.instance<NoteModel>();
     noteModel.id = mapnoteModel['id'];
+    noteModel.note.note_created = mapnoteModel['note_created'];
+    noteModel.note.note_name = mapnoteModel['note_name'];
+    noteModel.note.note_description = mapnoteModel['note_description'];
 
     return noteModel;
   }

@@ -1,15 +1,16 @@
+import 'package:get_it/get_it.dart';
 import '../domain/note_entities.dart';
 import 'note_api.dart';
 
 class NoteModel {
   int? id;
-  Note note;
+  Note note = GetIt.instance<Note>();
 
-  NoteModel(this.note);
+  NoteModel();
 }
 
 class NoteListFetcher {
-  static Future<List<NoteModel>> FetchToDoes() {
+  static Future<List<NoteModel>> FetchNotes() {
     return NoteApi.GetToDoes();
   }
 }

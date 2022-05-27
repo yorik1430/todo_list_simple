@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import '../data/note_repositary.dart';
-import '../domain/note_entities.dart';
 import 'note_list_viewmodel.dart';
 
 class NotesPage extends StatelessWidget {
@@ -45,7 +45,7 @@ class NotesPage extends StatelessWidget {
         onPressed: () {
           Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => MyNote(NoteModel(Note()))));
+              MaterialPageRoute(builder: (_) => MyNote(GetIt.instance<NoteModel>())));
         },
         tooltip: 'Добавить заметку',
         child: const Icon(Icons.add),

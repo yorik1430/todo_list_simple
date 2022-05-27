@@ -1,11 +1,12 @@
+import 'package:get_it/get_it.dart';
 import '../domain/todo_entities.dart';
 import 'todo_api.dart';
 
 class ToDoModel {
   int? id;
-  ToDo toDo;
+  ToDo toDo = GetIt.instance<ToDo>();
 
-  ToDoModel(this.toDo);
+  ToDoModel();
 }
 
 class ToDoListFetcher {
