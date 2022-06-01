@@ -1,17 +1,16 @@
-import 'package:get_it/get_it.dart';
 import '../domain/note_entities.dart';
 import 'note_api.dart';
 
 class NoteModel {
   int? id;
-  Note note = GetIt.instance<Note>();
+  Note note;
 
-  NoteModel();
+  NoteModel(this.note);
 }
 
 class NoteListFetcher {
   static Future<List<NoteModel>> FetchNotes() {
-    return NoteApi.GetToDoes();
+    return NoteApi.GetNotes();
   }
 }
 
@@ -21,7 +20,7 @@ class NoteListSaver {
   NoteListSaver(this.noteModel);
 
   Future SaveNote() async {
-    await NoteApi.SaveToDo(noteModel);
+    await NoteApi.SaveNote(noteModel);
   }
 }
 

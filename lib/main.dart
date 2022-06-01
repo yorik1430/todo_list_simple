@@ -1,33 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:get_it/get_it.dart';
-import 'features/note/data/note_repositary.dart';
-import 'features/note/domain/note_entities.dart';
 import 'features/note/ui/note_list_view.dart';
-import 'features/note/ui/note_list_viewmodel.dart';
-import 'features/todo/data/todo_repositary.dart';
-import 'features/todo/domain/todo_entities.dart';
 import 'features/todo/ui/todo_list_view.dart';
-import 'features/todo/ui/todo_list_viewmodel.dart';
-
-void setupGetIt(){
-  GetIt.instance.registerFactory<Note>(() => Note());
-  GetIt.instance.registerFactory<NoteModel>(() => NoteModel());
-  GetIt.instance.registerFactory<ToDo>(() => ToDo());
-  GetIt.instance.registerFactory<ToDoModel>(() => ToDoModel());
-}
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  setupGetIt();
   Hive.initFlutter();
-  runApp(BlocProvider(create: (context) => ToDoBloc(ToDoesEmpty()) , child: BlocProvider(create: (context) => NoteBloc(NotesEmpty()) , child:MaterialApp(
-      title: 'Flutter Demo',
+  runApp(ProviderScope(child:MaterialApp(
+      title: 'Список дел',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyApp()))));
+      home: const MyApp()
+  )
+  )
+  );
 }
 
 class MyApp extends StatelessWidget {

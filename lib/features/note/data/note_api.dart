@@ -1,12 +1,10 @@
-import 'package:get_it/get_it.dart';
-
 import '../domain/note_entities.dart';
 import 'note_repositary.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class NoteApi {
-  static Future SaveToDo(NoteModel noteModel) async {
-    final box = await Hive.openBox('ToDoes1');
+  static Future SaveNote(NoteModel noteModel) async {
+    final box = await Hive.openBox('ToDoes01');
     if (noteModel.id == null) {
       int id = await box.add('');
       noteModel.id = id;
@@ -15,8 +13,8 @@ class NoteApi {
     await box.put(noteModel.id, valueToDo);
   }
 
-  static Future<List<NoteModel>> GetToDoes() async {
-    final box = await Hive.openBox('ToDoes1');
+  static Future<List<NoteModel>> GetNotes() async {
+    final box = await Hive.openBox('ToDoes01');
     final res = await box.values;
     List<NoteModel> noteModels = res.isNotEmpty ? res.map((element) => NoteFromMap(element)).toList() : [];
 
@@ -24,6 +22,7 @@ class NoteApi {
   }
 
   static Map<String, dynamic> NoteToMap(NoteModel noteModel) {
+
     return {'id':noteModel.id,
       'note_created':noteModel.note.note_created,
       'note_name':noteModel.note.note_name,
@@ -32,7 +31,7 @@ class NoteApi {
 
   static NoteModel NoteFromMap(mapnoteModel) {
 
-    NoteModel noteModel = GetIt.instance<NoteModel>();
+    NoteModel noteModel = NoteModel(Note());
     noteModel.id = mapnoteModel['id'];
     noteModel.note.note_created = mapnoteModel['note_created'];
     noteModel.note.note_name = mapnoteModel['note_name'];

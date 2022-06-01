@@ -1,54 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:date_field/date_field.dart';
-import 'package:get_it/get_it.dart';
 import 'package:todo_list_simple/features/todo/ui/todo_list_viewmodel.dart';
 import '../data/todo_repositary.dart';
 import '../domain/todo_entities.dart';
+import '../domain/todo_usecases.dart';
 
-class ToDoesPage extends StatelessWidget {
+final todoListProvider =
+    StateNotifierProvider<ToDoBloc, List<ToDoModel>>((ref) {
+  ToDoBloc toDoBloc = ToDoBloc([]);
+  toDoBloc.ToDoesReceive();
+  return toDoBloc;
+});
+
+class ToDoesPage extends ConsumerWidget {
   const ToDoesPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: Text('Список задач'),
       ),
-      body: Center(child: BlocBuilder<ToDoBloc, ToDoStates>(
-          builder: (BuildContext context, state) {
-        if (state is ToDoesEmpty) {
-          BlocProvider.of<ToDoBloc>(context).add(ToDoesReceive());
-          return Text('данные начинают считыватся');
-        }
-        if (state is ToDoreceived) {
-          return ListView.builder(
-              itemCount: state.toDoModels.length,
-              itemBuilder: (cont, index) => ListTile(
-                  leading:
-                      Text(state.toDoModels[index].toDo.todo_date.toString()),
-                  title: Text(state.toDoModels[index].toDo.todo_name),
-                  trailing: Checkbox(
-                    value: state.toDoModels[index].toDo.isDone,
-                    onChanged: (_) {},
-                  ),
-                  onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => MyToDo(state.toDoModels[index])),
-                      )));
-        }
-        if (state is ToDoreceiving) {
-          return Text('данные считываются');
-        }
-        return Text('ошибка');
+      body: Center(child: Consumer(builder: (BuildContext context, ref, _) {
+        List<ToDoModel> toDoModels = ref.watch(todoListProvider);
+
+        return ListView.builder(
+            itemCount: toDoModels.length,
+            itemBuilder: (cont, index) => ListTile(
+                leading: Text(toDoModels[index].toDo.todo_date.toString()),
+                title: Text(toDoModels[index].toDo.todo_name),
+                trailing: Checkbox(
+                  value: toDoModels[index].toDo.isDone,
+                  onChanged: (_) {},
+                ),
+                onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => MyToDo(toDoModels[index])),
+                    )));
       })),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (_) => MyToDo(GetIt.instance<ToDoModel>())));
+              MaterialPageRoute(builder: (_) => MyToDo(ToDoModel(ToDo()))));
         },
         tooltip: 'Добавить задачу',
         child: const Icon(Icons.add),
@@ -114,21 +111,22 @@ class MyToDoState extends State<MyToDo> {
                         });
                       },
                     ),
-                    FloatingActionButton.extended(
-                      onPressed: () {
-                        //ToDoModel.ToDo.todo_date = DateTime.parse(_datecontroller.text);
-                        toDoModel.toDo.todo_name = _namecontroller.text;
-                        toDoModel.toDo.todo_description =
-                            _descriptioncontroller.text;
+                    Consumer(builder: (BuildContext context, ref, _) {
+                      return FloatingActionButton.extended(
+                        onPressed: () {
+                          toDoModel.toDo.todo_name = _namecontroller.text;
+                          toDoModel.toDo.todo_description =
+                              _descriptioncontroller.text;
 
-                        BlocProvider.of<ToDoBloc>(context)
-                            .add(ToDoChange(toDoModel));
-                        Navigator.pop(context);
-                      },
-                      label: Text('Сохранить задачу'),
-                      icon: Icon(Icons.add),
-                      backgroundColor: Colors.amber,
-                    )
+                          ToDoSaver(toDoModel).SaveToDo();
+                          ref.read(todoListProvider.notifier).ToDoesReceive();
+                          Navigator.pop(context);
+                        },
+                        label: Text('Сохранить задачу'),
+                        icon: Icon(Icons.add),
+                        backgroundColor: Colors.amber,
+                      );
+                    })
                   ],
                 ))));
   }

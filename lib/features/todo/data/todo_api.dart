@@ -1,10 +1,10 @@
-import 'package:get_it/get_it.dart';
+import '../domain/todo_entities.dart';
 import 'todo_repositary.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DataApi {
   static Future SaveToDo(ToDoModel noteModel) async {
-    final box = await Hive.openBox('ToDoes2');
+    final box = await Hive.openBox('ToDoes02');
     if (noteModel.id == null) {
       int id = await box.add('');
       noteModel.id = id;
@@ -14,7 +14,7 @@ class DataApi {
   }
 
   static Future<List<ToDoModel>> GetToDoes() async {
-    final box = await Hive.openBox('ToDoes2');
+    final box = await Hive.openBox('ToDoes02');
     final res = await box.values;
     List<ToDoModel> noteModels = res.isNotEmpty ? res.map((element) => ToDoFromMap(element)).toList() : [];
 
@@ -31,7 +31,7 @@ class DataApi {
 
   static ToDoModel ToDoFromMap(mapnoteModel) {
 
-    ToDoModel todoModel = GetIt.instance<ToDoModel>();
+    ToDoModel todoModel = ToDoModel(ToDo());
     todoModel.id = mapnoteModel['id'];
     todoModel.toDo.todo_date = mapnoteModel['todo_date'];
     todoModel.toDo.todo_name = mapnoteModel['todo_name'];
