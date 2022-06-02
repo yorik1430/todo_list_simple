@@ -1,26 +1,20 @@
-import '../domain/note_entities.dart';
+import '../domain/note_usecases.dart';
 import 'note_api.dart';
+import 'note_model.dart';
 
-class NoteModel {
-  int? id;
-  Note note;
-
-  NoteModel(this.note);
-}
-
-class NoteListFetcher {
-  static Future<List<NoteModel>> FetchNotes() {
-    return NoteApi.GetNotes();
+class NoteListFetcher implements NoteListReceiver {
+  Future<List<NoteModel>> ReceiveNotes() async {
+    return await NoteApi.GetNotes();
   }
-}
+ }
 
-class NoteListSaver {
-  NoteModel noteModel;
-
-  NoteListSaver(this.noteModel);
+class NoteListSaver implements NoteSaver {
+  NoteModel note;
+  NoteListSaver(this.note);
 
   Future SaveNote() async {
-    await NoteApi.SaveNote(noteModel);
+    await NoteApi.SaveNote(note);
   }
+
 }
 

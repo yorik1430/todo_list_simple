@@ -1,8 +1,10 @@
-import '../../note/domain/note_entities.dart';
 
 class ToDo {
-  DateTime todo_date = DateTime.now();
-  String todo_name = '';
-  String todo_description = '';
-  bool isDone = false;
+  DateTime todo_date;
+  String todo_name;
+  String todo_description;
+  bool isDone;
+
+  ToDo({this.todo_name = '', this.todo_description = '', date, this.isDone = false}): todo_date = date ?? DateTime.now();
+
   }

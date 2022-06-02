@@ -1,5 +1,5 @@
+import 'package:todo_list_simple/features/todo/data/todo_model.dart';
 import '../domain/todo_entities.dart';
-import 'todo_repositary.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DataApi {
@@ -23,20 +23,16 @@ class DataApi {
 
   static Map<String, dynamic> ToDoToMap(ToDoModel noteModel) {
     return {'id':noteModel.id,
-      'todo_date':noteModel.toDo.todo_date,
-      'todo_name':noteModel.toDo.todo_name,
-      'todo_description':noteModel.toDo.todo_description,
-      'isDone':noteModel.toDo.isDone};
+      'todo_date':noteModel.todo_date,
+      'todo_name':noteModel.todo_name,
+      'todo_description':noteModel.todo_description,
+      'isDone':noteModel.isDone};
   }
 
   static ToDoModel ToDoFromMap(mapnoteModel) {
 
-    ToDoModel todoModel = ToDoModel(ToDo());
+    ToDoModel todoModel = ToDoModel(todo_name: mapnoteModel['todo_name'],todo_description: mapnoteModel['todo_description'], date: mapnoteModel['todo_date'],isDone: mapnoteModel['isDone']);
     todoModel.id = mapnoteModel['id'];
-    todoModel.toDo.todo_date = mapnoteModel['todo_date'];
-    todoModel.toDo.todo_name = mapnoteModel['todo_name'];
-    todoModel.toDo.todo_description = mapnoteModel['todo_description'];
-    todoModel.toDo.isDone = mapnoteModel['isDone'];
 
     return todoModel;
   }

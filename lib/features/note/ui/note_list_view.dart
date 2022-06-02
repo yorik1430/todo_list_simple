@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../data/note_model.dart';
 import '../data/note_repositary.dart';
 import '../domain/note_entities.dart';
 import 'note_list_viewmodel.dart';
@@ -28,8 +29,8 @@ class NotesPage extends ConsumerWidget {
         return ListView.builder(
             itemCount: noteModels.length,
             itemBuilder: (cont, index) => ListTile(
-                leading: Text(noteModels[index].note.note_created.toString()),
-                title: Text(noteModels[index].note.note_name),
+                leading: Text(noteModels[index].note_created.toString()),
+                title: Text(noteModels[index].note_name),
                 onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -39,7 +40,7 @@ class NotesPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (_) => MyNote(NoteModel(Note()))));
+              MaterialPageRoute(builder: (_) => MyNote(NoteModel())));
         },
         tooltip: 'Добавить заметку',
         child: const Icon(Icons.add),
@@ -69,9 +70,9 @@ class MyMyNoteState extends State<MyNote> {
 
   @override
   Widget build(BuildContext context) {
-    _createdcontroller.text = noteModel.note.note_created.toString();
-    _namecontroller.text = noteModel.note.note_name;
-    _descriptioncontroller.text = noteModel.note.note_description;
+    _createdcontroller.text = noteModel.note_created.toString();
+    _namecontroller.text = noteModel.note_name;
+    _descriptioncontroller.text = noteModel.note_description;
 
     return Scaffold(
         appBar: AppBar(
@@ -91,8 +92,8 @@ class MyMyNoteState extends State<MyNote> {
                     Consumer(builder: (BuildContext context, ref, _) {
                       return FloatingActionButton.extended(
                         onPressed: () {
-                          noteModel.note.note_name = _namecontroller.text;
-                          noteModel.note.note_description =
+                          noteModel.note_name = _namecontroller.text;
+                          noteModel.note_description =
                               _descriptioncontroller.text;
 
                           NoteListSaver(noteModel).SaveNote();

@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:date_field/date_field.dart';
 import 'package:todo_list_simple/features/todo/ui/todo_list_viewmodel.dart';
+import '../data/todo_model.dart';
 import '../data/todo_repositary.dart';
-import '../domain/todo_entities.dart';
-import '../domain/todo_usecases.dart';
 
 final todoListProvider =
     StateNotifierProvider<ToDoBloc, List<ToDoModel>>((ref) {
@@ -30,10 +29,10 @@ class ToDoesPage extends ConsumerWidget {
         return ListView.builder(
             itemCount: toDoModels.length,
             itemBuilder: (cont, index) => ListTile(
-                leading: Text(toDoModels[index].toDo.todo_date.toString()),
-                title: Text(toDoModels[index].toDo.todo_name),
+                leading: Text(toDoModels[index].todo_date.toString()),
+                title: Text(toDoModels[index].todo_name),
                 trailing: Checkbox(
-                  value: toDoModels[index].toDo.isDone,
+                  value: toDoModels[index].isDone,
                   onChanged: (_) {},
                 ),
                 onTap: () => Navigator.push(
@@ -45,7 +44,7 @@ class ToDoesPage extends ConsumerWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(context,
-              MaterialPageRoute(builder: (_) => MyToDo(ToDoModel(ToDo()))));
+              MaterialPageRoute(builder: (_) => MyToDo(ToDoModel())));
         },
         tooltip: 'Добавить задачу',
         child: const Icon(Icons.add),
@@ -73,8 +72,8 @@ class MyToDoState extends State<MyToDo> {
 
   @override
   Widget build(BuildContext context) {
-    _namecontroller.text = toDoModel.toDo.todo_name;
-    _descriptioncontroller.text = toDoModel.toDo.todo_description;
+    _namecontroller.text = toDoModel.todo_name;
+    _descriptioncontroller.text = toDoModel.todo_description;
 
     return Scaffold(
         appBar: AppBar(
@@ -88,10 +87,10 @@ class MyToDoState extends State<MyToDo> {
                     DateTimeField(
                       decoration:
                           const InputDecoration(hintText: 'Дата задачи'),
-                      selectedDate: toDoModel.toDo.todo_date,
+                      selectedDate: toDoModel.todo_date,
                       onDateSelected: (DateTime value) {
                         setState(() {
-                          toDoModel.toDo.todo_date = value;
+                          toDoModel.todo_date = value;
                         });
                       },
                     ),
@@ -101,12 +100,12 @@ class MyToDoState extends State<MyToDo> {
                     TextField(controller: _descriptioncontroller),
                     Text('Задача выполнена'),
                     Checkbox(
-                      value: toDoModel.toDo.isDone,
+                      value: toDoModel.isDone,
                       onChanged: (value) {
                         setState(() {
-                          toDoModel.toDo.isDone = value ?? false;
-                          toDoModel.toDo.todo_name = _namecontroller.text;
-                          toDoModel.toDo.todo_description =
+                          toDoModel.isDone = value ?? false;
+                          toDoModel.todo_name = _namecontroller.text;
+                          toDoModel.todo_description =
                               _descriptioncontroller.text;
                         });
                       },
@@ -114,11 +113,11 @@ class MyToDoState extends State<MyToDo> {
                     Consumer(builder: (BuildContext context, ref, _) {
                       return FloatingActionButton.extended(
                         onPressed: () {
-                          toDoModel.toDo.todo_name = _namecontroller.text;
-                          toDoModel.toDo.todo_description =
+                          toDoModel.todo_name = _namecontroller.text;
+                          toDoModel.todo_description =
                               _descriptioncontroller.text;
 
-                          ToDoSaver(toDoModel).SaveToDo();
+                          ToDoListSaver(toDoModel).SaveToDo();
                           ref.read(todoListProvider.notifier).ToDoesReceive();
                           Navigator.pop(context);
                         },
