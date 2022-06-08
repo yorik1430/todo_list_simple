@@ -1,27 +1,27 @@
 import 'package:todo_list_simple/features/todo/data/todo_model.dart';
-import '../domain/todo_entities.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import '../domain/todo_entities.dart';
 
 class DataApi {
-  static Future SaveToDo(ToDoModel noteModel) async {
+  static Future SaveToDo(ToDo toDo) async {
     final box = await Hive.openBox('ToDoes02');
-    if (noteModel.id == null) {
+    if (toDo.id == null) {
       int id = await box.add('');
-      noteModel.id = id;
+      toDo.id = id;
     }
-    final valueToDo = ToDoToMap(noteModel);
-    await box.put(noteModel.id, valueToDo);
+    final valueToDo = ToDoToMap(toDo);
+    await box.put(toDo.id, valueToDo);
   }
 
   static Future<List<ToDoModel>> GetToDoes() async {
     final box = await Hive.openBox('ToDoes02');
     final res = await box.values;
-    List<ToDoModel> noteModels = res.isNotEmpty ? res.map((element) => ToDoFromMap(element)).toList() : [];
+    List<ToDoModel> noteModels = res.isNotEmpty ? res.where((element) => element != '').map((element) => ToDoFromMap(element)).toList() : [];
 
     return noteModels;
   }
 
-  static Map<String, dynamic> ToDoToMap(ToDoModel noteModel) {
+  static Map<String, dynamic> ToDoToMap(ToDo noteModel) {
     return {'id':noteModel.id,
       'todo_date':noteModel.todo_date,
       'todo_name':noteModel.todo_name,

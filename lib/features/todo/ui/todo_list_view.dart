@@ -4,9 +4,10 @@ import 'package:date_field/date_field.dart';
 import 'package:todo_list_simple/features/todo/ui/todo_list_viewmodel.dart';
 import '../data/todo_model.dart';
 import '../data/todo_repositary.dart';
+import '../domain/todo_entities.dart';
 
 final todoListProvider =
-    StateNotifierProvider<ToDoBloc, List<ToDoModel>>((ref) {
+    StateNotifierProvider<ToDoBloc, List<ToDo>>((ref) {
   ToDoBloc toDoBloc = ToDoBloc([]);
   toDoBloc.ToDoesReceive();
   return toDoBloc;
@@ -24,7 +25,7 @@ class ToDoesPage extends ConsumerWidget {
         title: Text('Список задач'),
       ),
       body: Center(child: Consumer(builder: (BuildContext context, ref, _) {
-        List<ToDoModel> toDoModels = ref.watch(todoListProvider);
+        List<ToDo> toDoModels = ref.watch(todoListProvider);
 
         return ListView.builder(
             itemCount: toDoModels.length,
@@ -54,26 +55,26 @@ class ToDoesPage extends ConsumerWidget {
 }
 
 class MyToDo extends StatefulWidget {
-  ToDoModel toDoModel;
+  ToDo toDo;
 
-  MyToDo(this.toDoModel);
+  MyToDo(this.toDo);
   @override
   State<MyToDo> createState() {
-    return MyToDoState(toDoModel);
+    return MyToDoState(toDo);
   }
 }
 
 class MyToDoState extends State<MyToDo> {
-  ToDoModel toDoModel;
+  ToDo toDo;
   TextEditingController _namecontroller = TextEditingController();
   TextEditingController _descriptioncontroller = TextEditingController();
 
-  MyToDoState(this.toDoModel);
+  MyToDoState(this.toDo);
 
   @override
   Widget build(BuildContext context) {
-    _namecontroller.text = toDoModel.todo_name;
-    _descriptioncontroller.text = toDoModel.todo_description;
+    _namecontroller.text = toDo.todo_name;
+    _descriptioncontroller.text = toDo.todo_description;
 
     return Scaffold(
         appBar: AppBar(
@@ -87,10 +88,10 @@ class MyToDoState extends State<MyToDo> {
                     DateTimeField(
                       decoration:
                           const InputDecoration(hintText: 'Дата задачи'),
-                      selectedDate: toDoModel.todo_date,
+                      selectedDate: toDo.todo_date,
                       onDateSelected: (DateTime value) {
                         setState(() {
-                          toDoModel.todo_date = value;
+                          toDo.todo_date = value;
                         });
                       },
                     ),
@@ -100,12 +101,12 @@ class MyToDoState extends State<MyToDo> {
                     TextField(controller: _descriptioncontroller),
                     Text('Задача выполнена'),
                     Checkbox(
-                      value: toDoModel.isDone,
+                      value: toDo.isDone,
                       onChanged: (value) {
                         setState(() {
-                          toDoModel.isDone = value ?? false;
-                          toDoModel.todo_name = _namecontroller.text;
-                          toDoModel.todo_description =
+                          toDo.isDone = value ?? false;
+                          toDo.todo_name = _namecontroller.text;
+                          toDo.todo_description =
                               _descriptioncontroller.text;
                         });
                       },
@@ -113,12 +114,10 @@ class MyToDoState extends State<MyToDo> {
                     Consumer(builder: (BuildContext context, ref, _) {
                       return FloatingActionButton.extended(
                         onPressed: () {
-                          toDoModel.todo_name = _namecontroller.text;
-                          toDoModel.todo_description =
-                              _descriptioncontroller.text;
+                          toDo.todo_name = _namecontroller.text;
+                          toDo.todo_description = _descriptioncontroller.text;
 
-                          ToDoListSaver(toDoModel).SaveToDo();
-                          ref.read(todoListProvider.notifier).ToDoesReceive();
+                          ToDoListSaver(toDo).SaveToDo().then((value) => ref.read(todoListProvider.notifier).ToDoesReceive());
                           Navigator.pop(context);
                         },
                         label: Text('Сохранить задачу'),
